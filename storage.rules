@@ -1,0 +1,19 @@
+rules_version = '2';
+
+// All Storage writes (image uploads/deletes) happen exclusively server-side via the Firebase
+// Admin SDK in api/admin/upload.ts, protected by the admin session cookie. The Admin SDK
+// bypasses these rules, so the client never needs write access. Product media is public read
+// so the storefront can display it directly from Storage URLs.
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /products/{productId}/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /{allPaths=**} {
+      allow read: if false;
+      allow write: if false;
+    }
+  }
+}

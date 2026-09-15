@@ -1,0 +1,43 @@
+rules_version = '2';
+
+// Security model:
+// - All writes (products, categories, orders, settings, shipping regions) happen exclusively
+//   server-side, via the Firebase Admin SDK in Vercel serverless functions (api/**), which is
+//   protected by the admin session cookie (see api/_lib/session.ts). The Admin SDK bypasses
+//   these rules entirely, so the client SDK never needs write access to anything.
+// - The public store only ever reads: active products, active categories, active shipping
+//   regions, and the two settings documents. Inactive/draft data and admin-only fields are
+//   fetched through authenticated admin API routes instead, never through the client SDK.
+// - Orders can be read one-by-one by their (random, unguessable) document id — used by the
+//   /pedido/:id confirmation page — but can never be listed or written by clients.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /products/{productId} {
+      allow get, list: if resource.data.active == true;
+      allow write: if false;
+    }
+
+    match /categories/{categoryId} {
+      allow get, list: if resource.data.active == true;
+      allow write: if false;
+    }
+
+    match /shippingRegions/{regionId} {
+      allow get, list: if resource.data.active == true;
+      allow write: if false;
+    }
+
+    match /settings/{settingId} {
+      allow get: if settingId == 'store' || settingId == 'shipping';
+      allow list: if false;
+      allow write: if false;
+    }
+
+    match /orders/{orderId} {
+      allow get: if true;
+      allow list: if false;
+      allow write: if false;
+    }
+  }
+}
