@@ -12,10 +12,10 @@ export async function createProduct(input: ProductInput): Promise<Product> {
 }
 
 export async function updateProduct(id: string, input: ProductInput): Promise<Product> {
-  const data = await adminApi.put<{ product: Product }>(`/api/admin/products/${id}`, input)
+  const data = await adminApi.put<{ product: Product }>(`/api/admin/products?id=${encodeURIComponent(id)}`, input)
   return data.product
 }
 
 export async function deleteProduct(id: string): Promise<void> {
-  await adminApi.delete(`/api/admin/products/${id}`)
+  await adminApi.delete(`/api/admin/products?id=${encodeURIComponent(id)}`)
 }

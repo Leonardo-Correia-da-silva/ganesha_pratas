@@ -24,20 +24,23 @@ export async function updateShippingSettings(
 }
 
 export async function listShippingRegions(): Promise<ShippingRegion[]> {
-  const data = await adminApi.get<{ regions: ShippingRegion[] }>('/api/admin/settings/shipping/regions')
+  const data = await adminApi.get<{ regions: ShippingRegion[] }>('/api/admin/settings/shipping-regions')
   return data.regions
 }
 
 export async function createShippingRegion(input: ShippingRegionInput): Promise<ShippingRegion> {
-  const data = await adminApi.post<{ region: ShippingRegion }>('/api/admin/settings/shipping/regions', input)
+  const data = await adminApi.post<{ region: ShippingRegion }>('/api/admin/settings/shipping-regions', input)
   return data.region
 }
 
 export async function updateShippingRegion(id: string, input: ShippingRegionInput): Promise<ShippingRegion> {
-  const data = await adminApi.put<{ region: ShippingRegion }>(`/api/admin/settings/shipping/regions/${id}`, input)
+  const data = await adminApi.put<{ region: ShippingRegion }>(
+    `/api/admin/settings/shipping-regions?id=${encodeURIComponent(id)}`,
+    input,
+  )
   return data.region
 }
 
 export async function deleteShippingRegion(id: string): Promise<void> {
-  await adminApi.delete(`/api/admin/settings/shipping/regions/${id}`)
+  await adminApi.delete(`/api/admin/settings/shipping-regions?id=${encodeURIComponent(id)}`)
 }

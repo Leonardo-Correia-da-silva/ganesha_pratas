@@ -12,10 +12,10 @@ export async function createCategory(input: CategoryInput): Promise<Category> {
 }
 
 export async function updateCategory(id: string, input: CategoryInput): Promise<Category> {
-  const data = await adminApi.put<{ category: Category }>(`/api/admin/categories/${id}`, input)
+  const data = await adminApi.put<{ category: Category }>(`/api/admin/categories?id=${encodeURIComponent(id)}`, input)
   return data.category
 }
 
 export async function deleteCategory(id: string): Promise<void> {
-  await adminApi.delete(`/api/admin/categories/${id}`)
+  await adminApi.delete(`/api/admin/categories?id=${encodeURIComponent(id)}`)
 }

@@ -1,6 +1,6 @@
 import { timingSafeEqual } from 'node:crypto'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { buildSessionCookie, createSessionToken } from '../_lib/session.js'
+import { buildLogoutCookie, buildSessionCookie, createSessionToken, isAuthenticated } from '../_lib/session.js'
 
 function safeCompare(a: string, b: string): boolean {
   const bufferA = Buffer.from(a)
@@ -9,7 +9,7 @@ function safeCompare(a: string, b: string): boolean {
   return timingSafeEqual(bufferA, bufferB)
 }
 
-export default function handler(req: VercelRequest, res: VercelResponse) {
+function handleLogin(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST')
     return res.status(405).json({ message: 'Método não permitido.' })
@@ -38,4 +38,33 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
   const token = createSessionToken()
   res.setHeader('Set-Cookie', buildSessionCookie(token))
   return res.status(200).json({ success: true })
+}
+
+function handleLogout(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST')
+    return res.status(405).json({ message: 'Método não permitido.' })
+  }
+
+  res.setHeader('Set-Cookie', buildLogoutCookie())
+  return res.status(200).json({ success: true })
+}
+
+function handleSession(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'GET') {
+    res.setHeader('Allow', 'GET')
+    return res.status(405).json({ message: 'Método não permitido.' })
+  }
+
+  return res.status(200).json({ authenticated: isAuthenticated(req) })
+}
+
+export default function handler(req: VercelRequest, res: VercelResponse) {
+  const { action } = req.query
+
+  if (action === 'login') return handleLogin(req, res)
+  if (action === 'logout') return handleLogout(req, res)
+  if (action === 'session') return handleSession(req, res)
+
+  return res.status(404).json({ message: 'Não encontrado.' })
 }

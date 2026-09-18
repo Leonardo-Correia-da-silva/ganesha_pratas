@@ -7,15 +7,15 @@ export async function listAllOrders(): Promise<Order[]> {
 }
 
 export async function getAdminOrder(id: string): Promise<Order> {
-  const data = await adminApi.get<{ order: Order }>(`/api/admin/orders/${id}`)
+  const data = await adminApi.get<{ order: Order }>(`/api/admin/orders?id=${encodeURIComponent(id)}`)
   return data.order
 }
 
 export async function updateOrderStatus(id: string, status: OrderStatus): Promise<Order> {
-  const data = await adminApi.patch<{ order: Order }>(`/api/admin/orders/${id}`, { status })
+  const data = await adminApi.patch<{ order: Order }>(`/api/admin/orders?id=${encodeURIComponent(id)}`, { status })
   return data.order
 }
 
 export async function deleteOrder(id: string): Promise<void> {
-  await adminApi.delete(`/api/admin/orders/${id}`)
+  await adminApi.delete(`/api/admin/orders?id=${encodeURIComponent(id)}`)
 }
