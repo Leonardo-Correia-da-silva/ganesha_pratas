@@ -22,11 +22,13 @@ import { Spinner } from '@/components/ui/Spinner'
 const schema = z.object({
   storeName: z.string().trim().min(1, 'Nome da loja é obrigatório.'),
   logoUrl: z.string(),
+  headerBackgroundColor: z.string(),
   footerLogoUrl: z.string(),
   footerBackgroundUrl: z.string(),
   heroEyebrow: z.string(),
   heroTitle: z.string(),
   heroSubtitle: z.string(),
+  heroSubtitleEnabled: z.boolean(),
   heroImageUrl: z.string(),
   aboutTitle: z.string(),
   aboutText: z.string(),
@@ -79,11 +81,13 @@ export function Settings() {
     defaultValues: {
       storeName: 'Joias Jaguariúna',
       logoUrl: '',
+      headerBackgroundColor: '',
       footerLogoUrl: '',
       footerBackgroundUrl: '',
       heroEyebrow: '',
       heroTitle: '',
       heroSubtitle: '',
+      heroSubtitleEnabled: true,
       heroImageUrl: '',
       aboutTitle: '',
       aboutText: '',
@@ -105,11 +109,13 @@ export function Settings() {
           reset({
             storeName: settings.storeName,
             logoUrl: settings.logoUrl ?? '',
+            headerBackgroundColor: settings.headerBackgroundColor ?? '',
             footerLogoUrl: settings.footerLogoUrl ?? '',
             footerBackgroundUrl: settings.footerBackgroundUrl ?? '',
             heroEyebrow: settings.heroEyebrow ?? '',
             heroTitle: settings.heroTitle ?? '',
             heroSubtitle: settings.heroSubtitle ?? '',
+            heroSubtitleEnabled: settings.heroSubtitleEnabled ?? true,
             heroImageUrl: settings.heroImageUrl ?? '',
             aboutTitle: settings.aboutTitle ?? '',
             aboutText: settings.aboutText ?? '',
@@ -129,6 +135,7 @@ export function Settings() {
   }, [reset])
 
   const logoUrl = watch('logoUrl')
+  const headerBackgroundColor = watch('headerBackgroundColor')
   const footerLogoUrl = watch('footerLogoUrl')
   const footerBackgroundUrl = watch('footerBackgroundUrl')
   const heroImageUrl = watch('heroImageUrl')
@@ -142,11 +149,13 @@ export function Settings() {
       await updateStoreSettings({
         ...values,
         logoUrl: values.logoUrl || null,
+        headerBackgroundColor: values.headerBackgroundColor || null,
         footerLogoUrl: values.footerLogoUrl || null,
         footerBackgroundUrl: values.footerBackgroundUrl || null,
         heroEyebrow: values.heroEyebrow || null,
         heroTitle: values.heroTitle || null,
         heroSubtitle: values.heroSubtitle || null,
+        heroSubtitleEnabled: values.heroSubtitleEnabled,
         heroImageUrl: values.heroImageUrl || null,
         heroVideoUrls,
         aboutTitle: values.aboutTitle || null,
@@ -187,6 +196,31 @@ export function Settings() {
             hint="JPG, PNG ou WEBP · até 3MB — ou cole o link de uma imagem já hospedada."
           />
 
+          <div>
+            <label className="mb-1.5 block text-xs uppercase tracking-wide text-neutral-600">Cor do cabeçalho</label>
+            <div className="flex items-center gap-3">
+              <input
+                type="color"
+                value={headerBackgroundColor || '#ffffff'}
+                onChange={(e) => setValue('headerBackgroundColor', e.target.value, { shouldDirty: true })}
+                className="h-10 w-14 cursor-pointer border border-stone bg-paper p-1"
+              />
+              {headerBackgroundColor && (
+                <button
+                  type="button"
+                  onClick={() => setValue('headerBackgroundColor', '', { shouldDirty: true })}
+                  className="text-xs uppercase tracking-wide text-neutral-500 underline hover:text-ink"
+                >
+                  Restaurar padrão
+                </button>
+              )}
+            </div>
+            <p className="mt-1 text-xs text-neutral-500">
+              Se sua logo for clara, escolha um cabeçalho escuro para ela ficar visível (e vice-versa). O texto do menu
+              se ajusta automaticamente para continuar legível.
+            </p>
+          </div>
+
           <ImageUrlField
             label="Logo do rodapé"
             value={footerLogoUrl}
@@ -214,12 +248,18 @@ export function Settings() {
             hint="Se deixar em branco, o site mostra um aviso pedindo pra preencher."
             {...register('heroTitle')}
           />
-          <Input
-            label="Parágrafo"
-            placeholder="Ex: Joias escolhidas para transformar momentos em memórias."
-            hint="Se deixar em branco, o site mostra um aviso pedindo pra preencher."
-            {...register('heroSubtitle')}
-          />
+          <div>
+            <Input
+              label="Parágrafo"
+              placeholder="Ex: Joias escolhidas para transformar momentos em memórias."
+              hint="Se deixar em branco, o site mostra um aviso pedindo pra preencher — a menos que você desative abaixo."
+              {...register('heroSubtitle')}
+            />
+            <label className="mt-2 flex items-center gap-2 text-sm text-ink">
+              <input type="checkbox" {...register('heroSubtitleEnabled')} className="size-4 accent-ink" />
+              Exibir parágrafo na capa
+            </label>
+          </div>
 
           <ImageUrlField
             label="Foto de fundo"

@@ -55,11 +55,17 @@ export const shippingSettingsInputSchema = z.object({
 export const storeSettingsInputSchema = z.object({
   storeName: z.string().trim().min(1),
   logoUrl: z.string().url().nullable().or(z.literal('').transform(() => null)),
+  headerBackgroundColor: z
+    .string()
+    .regex(/^#[0-9a-fA-F]{6}$/)
+    .nullable()
+    .or(z.literal('').transform(() => null)),
   footerLogoUrl: z.string().url().nullable().or(z.literal('').transform(() => null)),
   footerBackgroundUrl: z.string().url().nullable().or(z.literal('').transform(() => null)),
   heroEyebrow: z.string().trim().nullable().or(z.literal('').transform(() => null)),
   heroTitle: z.string().trim().nullable().or(z.literal('').transform(() => null)),
   heroSubtitle: z.string().trim().nullable().or(z.literal('').transform(() => null)),
+  heroSubtitleEnabled: z.boolean().optional().default(true),
   heroImageUrl: z.string().url().nullable().or(z.literal('').transform(() => null)),
   heroVideoUrls: z.array(z.string().url()).optional().default([]),
   aboutTitle: z.string().trim().nullable().or(z.literal('').transform(() => null)),

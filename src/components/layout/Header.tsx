@@ -21,18 +21,37 @@ const NAV_LINKS_AFTER = [
   { label: 'Contato', to: '/#contato' },
 ]
 
+function isDarkColor(hex: string): boolean {
+  const r = parseInt(hex.slice(1, 3), 16)
+  const g = parseInt(hex.slice(3, 5), 16)
+  const b = parseInt(hex.slice(5, 7), 16)
+  return (0.299 * r + 0.587 * g + 0.114 * b) / 255 < 0.55
+}
+
 export function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const { data: categories } = useAsync(() => getActiveCategories(), [])
   const { data: settings } = useAsync(() => getStoreSettings(), [])
 
+  const headerColor = settings?.headerBackgroundColor
+  const isDark = Boolean(headerColor && isDarkColor(headerColor))
+
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-stone bg-paper/95 backdrop-blur">
-      <div className="container-luxe flex h-16 items-center justify-between md:h-20">
+      <header
+        className={cn(
+          'sticky top-0 z-40 backdrop-blur',
+          headerColor ? 'border-b border-transparent' : 'border-b border-stone bg-paper/95',
+        )}
+        style={headerColor ? { backgroundColor: headerColor } : undefined}
+      >
+      <div
+        className="container-luxe flex h-16 items-center justify-between md:h-20"
+        style={isDark ? ({ '--color-ink': '#ffffff', '--color-neutral-600': '#d4d4d4' } as React.CSSProperties) : undefined}
+      >
         <button
-          className="p-2 md:hidden"
+          className="p-2 text-ink md:hidden"
           onClick={() => setDrawerOpen(true)}
           aria-label="Abrir menu"
         >
@@ -83,13 +102,13 @@ export function Header() {
 
         <div className="flex items-center gap-1">
           <button
-            className="hidden p-2 md:inline-flex"
+            className="hidden p-2 text-ink md:inline-flex"
             onClick={() => setSearchOpen((prev) => !prev)}
             aria-label={searchOpen ? 'Fechar pesquisa' : 'Abrir pesquisa'}
           >
             {searchOpen ? <X className="size-5" /> : <Search className="size-5" />}
           </button>
-          <button className="p-2 md:hidden" onClick={() => setSearchOpen(true)} aria-label="Abrir pesquisa">
+          <button className="p-2 text-ink md:hidden" onClick={() => setSearchOpen(true)} aria-label="Abrir pesquisa">
             <Search className="size-5" />
           </button>
           <CartIcon />

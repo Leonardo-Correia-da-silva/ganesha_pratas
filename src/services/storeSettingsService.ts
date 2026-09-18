@@ -5,11 +5,13 @@ import type { StoreSettings } from '@/types'
 const DEFAULT_SETTINGS: StoreSettings = {
   storeName: 'Joias Jaguariúna',
   logoUrl: null,
+  headerBackgroundColor: null,
   footerLogoUrl: null,
   footerBackgroundUrl: null,
   heroEyebrow: null,
   heroTitle: null,
   heroSubtitle: null,
+  heroSubtitleEnabled: true,
   heroImageUrl: null,
   heroVideoUrls: [],
   aboutTitle: null,

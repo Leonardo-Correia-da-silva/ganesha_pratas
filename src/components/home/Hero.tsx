@@ -42,9 +42,11 @@ export function Hero() {
         <h1 className="text-balance max-w-2xl font-display text-4xl leading-tight sm:text-5xl md:text-6xl">
           {settings?.heroTitle || HERO_TITLE_PLACEHOLDER}
         </h1>
-        <p className="mt-5 max-w-md text-balance text-sm text-neutral-200 md:text-base">
-          {settings?.heroSubtitle || HERO_SUBTITLE_PLACEHOLDER}
-        </p>
+        {settings?.heroSubtitleEnabled !== false && (
+          <p className="mt-5 max-w-md text-balance text-sm text-neutral-200 md:text-base">
+            {settings?.heroSubtitle || HERO_SUBTITLE_PLACEHOLDER}
+          </p>
+        )}
         <Link
           to="/produtos"
           className="mt-8 inline-flex items-center border border-paper px-8 py-4 text-xs uppercase tracking-widest text-paper transition-colors hover:bg-paper hover:text-ink"

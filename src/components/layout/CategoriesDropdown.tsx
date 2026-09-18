@@ -31,7 +31,10 @@ export function CategoriesDropdown({ categories }: { categories: Category[] }) {
       </button>
 
       {open && (
-        <div className="absolute left-1/2 top-full z-10 w-48 -translate-x-1/2 border border-stone bg-paper py-2 shadow-lg">
+        <div
+          className="absolute left-1/2 top-full z-10 w-48 -translate-x-1/2 border border-stone bg-paper py-2 shadow-lg"
+          style={{ '--color-ink': '#0a0a0a', '--color-neutral-600': '#605b52' } as React.CSSProperties}
+        >
           {categories.map((category) => (
             <Link
               key={category.id}
