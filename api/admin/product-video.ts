@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { requireAdmin } from '../_lib/requireAdmin'
-import { getAdminStorage } from '../_lib/firebaseAdmin'
+import { requireAdmin } from '../_lib/requireAdmin.js'
+import { getAdminStorage } from '../_lib/firebaseAdmin.js'
 
 const ALLOWED_TYPES = new Set(['video/mp4', 'video/webm', 'video/quicktime'])
 const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024 // 20MB — uploaded directly to Storage via signed URL, bypassing Vercel's request body limit

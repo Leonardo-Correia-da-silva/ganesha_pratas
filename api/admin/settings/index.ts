@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { FieldValue } from 'firebase-admin/firestore'
-import { requireAdmin } from '../../_lib/requireAdmin'
-import { getAdminFirestore } from '../../_lib/firebaseAdmin'
-import { storeSettingsInputSchema } from '../../_lib/schemas'
+import { requireAdmin } from '../../_lib/requireAdmin.js'
+import { getAdminFirestore } from '../../_lib/firebaseAdmin.js'
+import { storeSettingsInputSchema } from '../../_lib/schemas.js'
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (requireAdmin(req, res)) return

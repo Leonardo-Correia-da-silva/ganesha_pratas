@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { getAdminFirestore } from '../_lib/firebaseAdmin'
-import { createOrderInputSchema } from '../_lib/schemas'
-import { calculateShippingServer } from '../_lib/shipping'
+import { getAdminFirestore } from '../_lib/firebaseAdmin.js'
+import { createOrderInputSchema } from '../_lib/schemas.js'
+import { calculateShippingServer } from '../_lib/shipping.js'
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {

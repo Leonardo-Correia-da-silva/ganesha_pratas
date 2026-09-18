@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { requireAdmin } from '../_lib/requireAdmin'
-import { getAdminStorage } from '../_lib/firebaseAdmin'
+import { requireAdmin } from '../_lib/requireAdmin.js'
+import { getAdminStorage } from '../_lib/firebaseAdmin.js'
 
 const ALLOWED_TYPES = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/webp'])
 const MAX_FILE_SIZE_BYTES = 3 * 1024 * 1024 // 3MB per image (base64 body stays under Vercel's request limit)

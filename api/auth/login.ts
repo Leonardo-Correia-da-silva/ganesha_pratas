@@ -1,6 +1,6 @@
 import { timingSafeEqual } from 'node:crypto'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { buildSessionCookie, createSessionToken } from '../_lib/session'
+import { buildSessionCookie, createSessionToken } from '../_lib/session.js'
 
 function safeCompare(a: string, b: string): boolean {
   const bufferA = Buffer.from(a)
