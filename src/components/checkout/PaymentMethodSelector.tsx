@@ -16,7 +16,7 @@ const OPTIONS: Array<{ value: PaymentMethod; title: string; pickupOnly?: boolean
 
 export function PaymentMethodSelector({ value, deliveryMethod, onChange }: PaymentMethodSelectorProps) {
   const availableOptions = OPTIONS.filter((option) => !option.pickupOnly || deliveryMethod === 'pickup')
-  const showCreditFeeNotice = deliveryMethod === 'delivery' && value === 'credit'
+  const showCreditFeeNotice = value === 'credit'
 
   return (
     <div>
@@ -40,8 +40,8 @@ export function PaymentMethodSelector({ value, deliveryMethod, onChange }: Payme
 
       {showCreditFeeNotice && (
         <p className="mt-3 border border-gold-light bg-gold-light/40 px-4 py-3 text-xs text-ink">
-          Pagamentos com cartão de crédito na entrega têm taxa adicional. O valor da taxa será informado pela loja
-          pelo WhatsApp após o pedido.
+          Pagamentos com cartão de crédito têm taxa adicional da maquininha. O valor da taxa será informado pela
+          loja pelo WhatsApp após o pedido.
         </p>
       )}
     </div>

@@ -116,9 +116,9 @@ export function OrderDetail() {
             </p>
           )}
           <p className="mt-3 text-sm text-ink">Pagamento: {PAYMENT_METHOD_LABELS[order.paymentMethod]}</p>
-          {order.deliveryMethod === 'delivery' && order.paymentMethod === 'credit' && (
+          {order.paymentMethod === 'credit' && (
             <p className="mt-2 border border-gold-light bg-gold-light/40 px-3 py-2 text-xs text-ink">
-              Cartão de crédito na entrega tem taxa adicional — combine o valor com o cliente pelo WhatsApp.
+              Cartão de crédito tem taxa adicional da maquininha — combine o valor com o cliente pelo WhatsApp.
             </p>
           )}
         </div>

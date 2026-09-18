@@ -103,10 +103,10 @@ export function OrderConfirmation() {
             )
           )}
           <p>Pagamento: {PAYMENT_METHOD_LABELS[order.paymentMethod]}</p>
-          {order.deliveryMethod === 'delivery' && order.paymentMethod === 'credit' && (
+          {order.paymentMethod === 'credit' && (
             <p className="border border-gold-light bg-gold-light/40 px-4 py-3 text-xs text-ink">
-              Pagamentos com cartão de crédito na entrega têm taxa adicional. O valor será combinado com a loja pelo
-              WhatsApp.
+              Pagamentos com cartão de crédito têm taxa adicional da maquininha. O valor será combinado com a loja
+              pelo WhatsApp.
             </p>
           )}
         </div>

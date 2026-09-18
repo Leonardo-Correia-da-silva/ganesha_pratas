@@ -64,8 +64,8 @@ export function generateWhatsAppMessage(order: Order): string {
     `💳 Pagamento: ${PAYMENT_METHOD_LABELS[order.paymentMethod]}`,
   ]
 
-  if (order.deliveryMethod === 'delivery' && order.paymentMethod === 'credit') {
-    sections.push('', '⚠️ Cartão de crédito na entrega tem taxa adicional — combine o valor com o cliente.')
+  if (order.paymentMethod === 'credit') {
+    sections.push('', '⚠️ Cartão de crédito tem taxa adicional da maquininha — combine o valor com o cliente.')
   }
 
   return sections.join('\n')
