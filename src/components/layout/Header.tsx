@@ -12,7 +12,7 @@ import { cn } from '@/utils/cn'
 
 const NAV_LINKS_BEFORE = [
   { label: 'Início', to: '/' },
-  { label: 'Joias', to: '/produtos' },
+  { label: 'Produtos', to: '/produtos' },
 ]
 
 const NAV_LINKS_AFTER = [

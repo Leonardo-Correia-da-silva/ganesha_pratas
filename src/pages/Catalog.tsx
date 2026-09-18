@@ -43,9 +43,6 @@ export function Catalog() {
     <div className="container-luxe py-12 md:py-16">
       <div className="mb-8">
         <p className="mb-2 text-xs uppercase tracking-[0.3em] text-gold">Coleção completa</p>
-        <h1 className="font-display text-3xl text-ink md:text-4xl">
-          {search ? `Resultados para "${search}"` : novidades ? 'Novidades' : 'Todas as joias'}
-        </h1>
       </div>
 
       <div className="mb-10">

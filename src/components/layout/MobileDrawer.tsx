@@ -11,7 +11,7 @@ interface MobileDrawerProps {
 
 const NAV_LINKS = [
   { label: 'Início', to: '/' },
-  { label: 'Joias', to: '/produtos' },
+  { label: 'Produtos', to: '/produtos' },
   { label: 'Novidades', to: '/produtos?novidades=true' },
   { label: 'Sobre', to: '/#sobre' },
   { label: 'Contato', to: '/#contato' },
