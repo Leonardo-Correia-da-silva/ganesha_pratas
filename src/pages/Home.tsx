@@ -3,7 +3,6 @@ import { CategoryGrid } from '@/components/home/CategoryGrid'
 import { ProductSection } from '@/components/home/ProductSection'
 import { AboutBanner } from '@/components/home/AboutBanner'
 import { Benefits } from '@/components/home/Benefits'
-import { InstagramSection } from '@/components/home/InstagramSection'
 import { useAsync } from '@/hooks/useAsync'
 import { getActiveCategories } from '@/services/categoryService'
 import { getFeaturedProducts, getNewProducts } from '@/services/productService'
@@ -43,7 +42,6 @@ export function Home() {
       />
 
       <Benefits />
-      <InstagramSection />
     </>
   )
 }
