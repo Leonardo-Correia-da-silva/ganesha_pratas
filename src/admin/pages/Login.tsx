@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { useAdminAuth } from '@/admin/hooks/useAdminAuth'
 import { AdminApiError } from '@/admin/services/adminApi'
+import { useAsync } from '@/hooks/useAsync'
+import { getStoreSettings } from '@/services/storeSettingsService'
 
 const loginSchema = z.object({
   email: z.string().email('Informe um email válido.'),
@@ -18,8 +20,11 @@ type LoginFormValues = z.infer<typeof loginSchema>
 export function Login() {
   const { authenticated, checking, login } = useAdminAuth()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const expired = searchParams.get('expired') === '1'
   const [serverError, setServerError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
+  const { data: settings } = useAsync(() => getStoreSettings(), [])
 
   const {
     register,
@@ -45,12 +50,18 @@ export function Login() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-ink px-4">
-      <div className="w-full max-w-sm bg-paper p-8">
-        <p className="text-center font-display text-2xl text-ink">Joias Jaguariúna</p>
+    <div className="flex min-h-screen items-center justify-center bg-offwhite px-4">
+      <div className="w-full max-w-sm border border-stone bg-paper p-8">
+        <p className="text-center font-display text-2xl text-ink">{settings?.storeName ?? 'Joias Jaguariúna'}</p>
         <p className="mt-1 text-center text-xs uppercase tracking-widest text-neutral-500">
           Painel administrativo
         </p>
+
+        {expired && (
+          <p className="mt-6 border border-gold-light bg-gold-light/40 px-4 py-3 text-center text-sm text-ink">
+            Sua sessão expirou. Faça login novamente.
+          </p>
+        )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-4">
           <Input label="Email" type="email" autoComplete="username" error={errors.email?.message} {...register('email')} />
@@ -68,7 +79,7 @@ export function Login() {
             </p>
           )}
 
-          <Button type="submit" className="w-full" loading={submitting}>
+          <Button type="submit" variant="secondary" className="w-full" loading={submitting}>
             Entrar
           </Button>
         </form>

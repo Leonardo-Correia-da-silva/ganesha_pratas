@@ -1,6 +1,16 @@
 export interface StoreSettings {
   storeName: string
   logoUrl: string | null
+  footerLogoUrl: string | null
+  footerBackgroundUrl: string | null
+  heroEyebrow: string | null
+  heroTitle: string | null
+  heroSubtitle: string | null
+  heroImageUrl: string | null
+  heroVideoUrls: string[]
+  aboutTitle: string | null
+  aboutText: string | null
+  aboutImageUrl: string | null
   whatsapp: string
   instagram: string
   email: string

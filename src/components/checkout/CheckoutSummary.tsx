@@ -5,9 +5,10 @@ interface CheckoutSummaryProps {
   items: CartItem[]
   subtotal: number
   shipping: number | null
+  shippingPending?: boolean
 }
 
-export function CheckoutSummary({ items, subtotal, shipping }: CheckoutSummaryProps) {
+export function CheckoutSummary({ items, subtotal, shipping, shippingPending }: CheckoutSummaryProps) {
   const total = subtotal + (shipping ?? 0)
 
   return (
@@ -32,14 +33,20 @@ export function CheckoutSummary({ items, subtotal, shipping }: CheckoutSummaryPr
         </div>
         <div className="flex justify-between text-neutral-600">
           <span>Frete</span>
-          <span>{shipping === null ? '—' : formatCurrency(shipping)}</span>
+          <span>{shippingPending ? 'A combinar' : shipping === null ? '—' : formatCurrency(shipping)}</span>
         </div>
       </div>
 
       <div className="mt-4 flex justify-between border-t border-stone pt-4 text-base font-medium text-ink">
         <span>Total</span>
-        <span>{formatCurrency(total)}</span>
+        <span>{formatCurrency(total)}{shippingPending && ' + frete'}</span>
       </div>
+
+      {shippingPending && (
+        <p className="mt-3 text-xs text-neutral-500">
+          O valor do frete pra sua região será combinado com a loja pelo WhatsApp após o pedido.
+        </p>
+      )}
     </div>
   )
 }

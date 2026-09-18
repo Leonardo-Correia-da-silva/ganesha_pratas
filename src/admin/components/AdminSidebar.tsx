@@ -1,6 +1,8 @@
 import { NavLink } from 'react-router-dom'
 import { LayoutDashboard, LogOut, Package, Settings, ShoppingCart, Tags, Truck } from 'lucide-react'
 import { useAdminAuth } from '@/admin/hooks/useAdminAuth'
+import { useAsync } from '@/hooks/useAsync'
+import { getStoreSettings } from '@/services/storeSettingsService'
 import { cn } from '@/utils/cn'
 
 const LINKS = [
@@ -9,29 +11,31 @@ const LINKS = [
   { to: '/admin/categories', label: 'Categorias', icon: Tags },
   { to: '/admin/orders', label: 'Pedidos', icon: ShoppingCart },
   { to: '/admin/settings/shipping', label: 'Frete', icon: Truck },
-  { to: '/admin/settings', label: 'Configurações', icon: Settings },
+  { to: '/admin/settings', label: 'Configurações', icon: Settings, end: true },
 ]
 
 export function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
   const { logout } = useAdminAuth()
+  const { data: settings } = useAsync(() => getStoreSettings(), [])
 
   return (
     <div className="flex h-full flex-col bg-ink text-offwhite">
       <div className="px-6 py-6">
         <p className="font-display text-lg text-paper">Painel Administrativo</p>
-        <p className="text-xs text-neutral-400">Joias Jaguariúna</p>
+        <p className="text-xs text-neutral-400">{settings?.storeName ?? 'Joias Jaguariúna'}</p>
       </div>
 
       <nav className="flex-1 space-y-1 px-3">
-        {LINKS.map(({ to, label, icon: Icon }) => (
+        {LINKS.map(({ to, label, icon: Icon, end }) => (
           <NavLink
             key={to}
             to={to}
+            end={end}
             onClick={onNavigate}
             className={({ isActive }) =>
               cn(
                 'flex items-center gap-3 px-3 py-2.5 text-sm transition-colors',
-                isActive ? 'bg-paper/10 text-paper' : 'text-neutral-300 hover:bg-paper/5 hover:text-paper',
+                isActive ? 'bg-gold-soft text-ink' : 'text-neutral-300 hover:bg-paper/5 hover:text-paper',
               )
             }
           >

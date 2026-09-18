@@ -17,6 +17,9 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const data = await response.json().catch(() => null)
 
   if (!response.ok) {
+    if (response.status === 401 && !window.location.pathname.endsWith('/admin/login')) {
+      window.location.assign('/admin/login?expired=1')
+    }
     throw new AdminApiError(data?.message ?? 'Ocorreu um erro inesperado.', response.status)
   }
 

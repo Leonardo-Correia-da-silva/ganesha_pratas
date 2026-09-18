@@ -26,7 +26,7 @@ export function CategoryPage() {
     <div className="container-luxe py-12 md:py-16">
       <div className="mb-10">
         <p className="mb-2 text-xs uppercase tracking-[0.3em] text-gold">Categoria</p>
-        <h1 className="font-display text-3xl text-ink md:text-4xl">{category?.name ?? ' '}</h1>
+        <h1 className="font-display text-3xl text-ink md:text-4xl">{category?.name ?? ' '}</h1>
         {category?.description && <p className="mt-3 max-w-xl text-sm text-neutral-500">{category.description}</p>}
       </div>
 

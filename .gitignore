@@ -16,6 +16,9 @@ dist-ssr
 !.env.example
 .vercel
 
+# Internal guide, not part of the app
+Manual-Painel-Ganesha-Pratas.pdf
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -26,3 +29,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+.vercel

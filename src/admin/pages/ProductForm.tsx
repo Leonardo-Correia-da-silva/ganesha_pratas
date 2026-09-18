@@ -5,10 +5,12 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { PageHeader } from '@/admin/components/PageHeader'
 import { ImageUploader } from '@/admin/components/ImageUploader'
+import { VideoUrlField } from '@/admin/components/VideoUrlField'
 import { AdminApiError } from '@/admin/services/adminApi'
 import { listAllCategories } from '@/admin/services/categoryAdminService'
 import { createProduct, updateProduct } from '@/admin/services/productAdminService'
 import { adminApi } from '@/admin/services/adminApi'
+import { uploadProductVideo } from '@/admin/services/uploadService'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Select } from '@/components/ui/Select'
@@ -69,6 +71,7 @@ export function ProductForm() {
   })
 
   const name = watch('name')
+  const videoUrl = watch('videoUrl')
 
   useEffect(() => {
     if (!isEditing) setValue('slug', slugify(name))
@@ -213,11 +216,13 @@ export function ProductForm() {
         </section>
 
         <section>
-          <Input
-            label="URL do vídeo (opcional)"
-            placeholder="https://..."
-            hint="Link externo do vídeo do produto"
-            {...register('videoUrl')}
+          <VideoUrlField
+            label="Vídeo (opcional)"
+            value={videoUrl}
+            onValueChange={(url) => setValue('videoUrl', url, { shouldDirty: true })}
+            onUpload={(file) => uploadProductVideo(storageProductId.current, file)}
+            inputProps={register('videoUrl')}
+            hint="MP4, WEBM ou MOV · até 20MB — ou cole o link de um vídeo já hospedado."
           />
         </section>
 

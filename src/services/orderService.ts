@@ -14,13 +14,6 @@ export class InsufficientStockError extends Error {
   }
 }
 
-export class OutOfDeliveryAreaError extends Error {
-  constructor() {
-    super('Este CEP está fora da nossa área de entrega.')
-    this.name = 'OutOfDeliveryAreaError'
-  }
-}
-
 export async function createOrder(payload: CreateOrderPayload): Promise<Order> {
   const response = await fetch('/api/orders/create', {
     method: 'POST',
@@ -34,9 +27,6 @@ export async function createOrder(payload: CreateOrderPayload): Promise<Order> {
     const code = data?.code as string | undefined
     if (code === 'INSUFFICIENT_STOCK') {
       throw new InsufficientStockError(data.productName ?? 'produto', data.available ?? 0)
-    }
-    if (code === 'OUT_OF_DELIVERY_AREA') {
-      throw new OutOfDeliveryAreaError()
     }
     throw new Error(data?.message ?? 'Não foi possível finalizar o pedido. Tente novamente.')
   }

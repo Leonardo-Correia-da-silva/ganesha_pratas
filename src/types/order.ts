@@ -1,5 +1,14 @@
 export type DeliveryMethod = 'pickup' | 'delivery'
 
+export type PaymentMethod = 'cash' | 'debit' | 'credit' | 'pix'
+
+export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
+  cash: 'Dinheiro',
+  debit: 'Cartão de débito',
+  credit: 'Cartão de crédito',
+  pix: 'Pix',
+}
+
 export type OrderStatus =
   | 'pending'
   | 'confirmed'
@@ -62,9 +71,10 @@ export interface Order {
   total: number
   deliveryMethod: DeliveryMethod
   shippingRegion: string | null
+  shippingPending: boolean
   address: OrderAddress | null
   status: OrderStatus
-  paymentMethod: 'A combinar'
+  paymentMethod: PaymentMethod
   createdAt: string
   updatedAt: string
 }
@@ -73,6 +83,7 @@ export interface CreateOrderPayload {
   clientRequestId: string
   customer: OrderCustomer
   deliveryMethod: DeliveryMethod
+  paymentMethod: PaymentMethod
   address: OrderAddress | null
   items: Array<{ productId: string; quantity: number }>
 }

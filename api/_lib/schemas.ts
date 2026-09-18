@@ -55,6 +55,16 @@ export const shippingSettingsInputSchema = z.object({
 export const storeSettingsInputSchema = z.object({
   storeName: z.string().trim().min(1),
   logoUrl: z.string().url().nullable().or(z.literal('').transform(() => null)),
+  footerLogoUrl: z.string().url().nullable().or(z.literal('').transform(() => null)),
+  footerBackgroundUrl: z.string().url().nullable().or(z.literal('').transform(() => null)),
+  heroEyebrow: z.string().trim().nullable().or(z.literal('').transform(() => null)),
+  heroTitle: z.string().trim().nullable().or(z.literal('').transform(() => null)),
+  heroSubtitle: z.string().trim().nullable().or(z.literal('').transform(() => null)),
+  heroImageUrl: z.string().url().nullable().or(z.literal('').transform(() => null)),
+  heroVideoUrls: z.array(z.string().url()).optional().default([]),
+  aboutTitle: z.string().trim().nullable().or(z.literal('').transform(() => null)),
+  aboutText: z.string().trim().nullable().or(z.literal('').transform(() => null)),
+  aboutImageUrl: z.string().url().nullable().or(z.literal('').transform(() => null)),
   whatsapp: z.string().trim().min(8, 'Informe um número de WhatsApp válido.'),
   instagram: z.string().trim().optional().default(''),
   email: z.string().trim().email().or(z.literal('')).optional().default(''),
@@ -74,23 +84,29 @@ export const orderAddressInputSchema = z.object({
   state: z.string().trim().min(2).max(2),
 })
 
-export const createOrderInputSchema = z.object({
-  clientRequestId: z.string().uuid('Requisição inválida.'),
-  customer: z.object({
-    name: z.string().trim().min(3, 'Nome é obrigatório.'),
-    phone: z.string().trim().min(10, 'WhatsApp inválido.'),
-  }),
-  deliveryMethod: z.enum(['pickup', 'delivery']),
-  address: orderAddressInputSchema.nullable(),
-  items: z
-    .array(
-      z.object({
-        productId: z.string().min(1),
-        quantity: z.number().int().positive('Quantidade deve ser maior que zero.'),
-      }),
-    )
-    .min(1, 'O carrinho está vazio.'),
-})
+export const createOrderInputSchema = z
+  .object({
+    clientRequestId: z.string().uuid('Requisição inválida.'),
+    customer: z.object({
+      name: z.string().trim().min(3, 'Nome é obrigatório.'),
+      phone: z.string().trim().min(10, 'WhatsApp inválido.'),
+    }),
+    deliveryMethod: z.enum(['pickup', 'delivery']),
+    paymentMethod: z.enum(['cash', 'debit', 'credit', 'pix']),
+    address: orderAddressInputSchema.nullable(),
+    items: z
+      .array(
+        z.object({
+          productId: z.string().min(1),
+          quantity: z.number().int().positive('Quantidade deve ser maior que zero.'),
+        }),
+      )
+      .min(1, 'O carrinho está vazio.'),
+  })
+  .refine((data) => !(data.deliveryMethod === 'delivery' && data.paymentMethod === 'cash'), {
+    message: 'Pagamento em dinheiro só está disponível para retirada na loja.',
+    path: ['paymentMethod'],
+  })
 
 export const orderStatusInputSchema = z.object({
   status: z.enum(['pending', 'confirmed', 'preparing', 'ready', 'out_for_delivery', 'completed', 'cancelled']),

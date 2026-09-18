@@ -8,9 +8,29 @@ const MAX_FILE_SIZE_BYTES = 3 * 1024 * 1024 // 3MB per image (base64 body stays 
 
 interface UploadBody {
   productId?: string
+  scope?: 'logo' | 'footer-logo' | 'footer-background' | 'category' | 'hero' | 'about'
   fileName?: string
   contentType?: string
   base64Data?: string
+}
+
+const ALLOWED_DELETE_PREFIXES = [
+  'products/',
+  'settings/logo/',
+  'settings/footer-logo/',
+  'settings/footer-background/',
+  'settings/hero/',
+  'settings/about/',
+  'categories/',
+]
+
+const SCOPED_PATHS: Record<'logo' | 'footer-logo' | 'footer-background' | 'category' | 'hero' | 'about', string> = {
+  logo: 'settings/logo',
+  'footer-logo': 'settings/footer-logo',
+  'footer-background': 'settings/footer-background',
+  category: 'categories',
+  hero: 'settings/hero',
+  about: 'settings/about',
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -18,7 +38,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if (req.method === 'DELETE') {
     const { path } = (req.body ?? {}) as { path?: string }
-    if (typeof path !== 'string' || !path.startsWith('products/')) {
+    if (typeof path !== 'string' || !ALLOWED_DELETE_PREFIXES.some((prefix) => path.startsWith(prefix))) {
       return res.status(400).json({ message: 'Caminho de arquivo inválido.' })
     }
     await getAdminStorage().bucket().file(path).delete({ ignoreNotFound: true })
@@ -30,9 +50,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ message: 'Método não permitido.' })
   }
 
-  const { productId, fileName, contentType, base64Data } = (req.body ?? {}) as UploadBody
+  const { productId, scope, fileName, contentType, base64Data } = (req.body ?? {}) as UploadBody
 
-  if (!productId || !fileName || !contentType || !base64Data) {
+  if (!fileName || !contentType || !base64Data || (!scope && !productId)) {
     return res.status(400).json({ message: 'Dados de upload incompletos.' })
   }
 
@@ -47,7 +67,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const extension = fileName.split('.').pop()?.toLowerCase() ?? 'jpg'
-  const path = `products/${productId}/images/${randomUUID()}.${extension}`
+  const path = scope
+    ? `${SCOPED_PATHS[scope]}/${randomUUID()}.${extension}`
+    : `products/${productId}/images/${randomUUID()}.${extension}`
   const file = getAdminStorage().bucket().file(path)
 
   await file.save(buffer, { metadata: { contentType }, public: true })

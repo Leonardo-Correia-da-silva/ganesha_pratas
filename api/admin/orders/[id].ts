@@ -38,6 +38,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).json({ order: { id: updated.id, ...updated.data() } })
   }
 
-  res.setHeader('Allow', 'GET, PATCH')
+  if (req.method === 'DELETE') {
+    const existing = await docRef.get()
+    if (!existing.exists) {
+      return res.status(404).json({ message: 'Pedido não encontrado.' })
+    }
+    await docRef.delete()
+    return res.status(200).json({ success: true })
+  }
+
+  res.setHeader('Allow', 'GET, PATCH, DELETE')
   return res.status(405).json({ message: 'Método não permitido.' })
 }

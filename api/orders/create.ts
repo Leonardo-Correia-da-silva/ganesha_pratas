@@ -91,14 +91,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       let shipping = 0
       let shippingRegion: string | null = null
+      let shippingPending = false
 
       if (payload.deliveryMethod === 'delivery' && payload.address) {
         const shippingResult = await calculateShippingServer(db, payload.address.zipCode)
         if (shippingResult.status === 'out-of-area') {
-          throw new Error('OUT_OF_DELIVERY_AREA')
+          // No shipping rate covers this CEP yet — let the order through and have the
+          // store owner negotiate the shipping cost directly with the customer over WhatsApp.
+          shippingPending = true
+        } else {
+          shipping = shippingResult.price
+          shippingRegion = shippingResult.regionName
         }
-        shipping = shippingResult.price
-        shippingRegion = shippingResult.regionName
       }
 
       const total = subtotal + shipping
@@ -117,9 +121,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         total,
         deliveryMethod: payload.deliveryMethod,
         shippingRegion,
+        shippingPending,
         address: payload.deliveryMethod === 'delivery' ? payload.address : null,
         status: 'pending' as const,
-        paymentMethod: 'A combinar' as const,
+        paymentMethod: payload.paymentMethod,
         createdAt: now,
         updatedAt: now,
       }
@@ -152,13 +157,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(409).json({
           code: 'PRODUCT_UNAVAILABLE',
           message: `O produto "${typedError.productName}" não está mais disponível.`,
-        })
-      }
-
-      if (error.message === 'OUT_OF_DELIVERY_AREA') {
-        return res.status(409).json({
-          code: 'OUT_OF_DELIVERY_AREA',
-          message: 'Este CEP está fora da nossa área de entrega.',
         })
       }
     }

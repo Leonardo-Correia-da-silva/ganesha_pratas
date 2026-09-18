@@ -9,6 +9,7 @@ import { getStoreSettings } from '@/services/storeSettingsService'
 import { generateWhatsAppMessage, getWhatsAppUrl } from '@/services/whatsappService'
 import { formatCurrency } from '@/utils/currency'
 import { formatZipCode } from '@/utils/cep'
+import { PAYMENT_METHOD_LABELS } from '@/types'
 
 export function OrderConfirmation() {
   const { id = '' } = useParams()
@@ -71,16 +72,25 @@ export function OrderConfirmation() {
           </div>
           <div className="flex justify-between text-neutral-600">
             <span>Frete</span>
-            <span>{formatCurrency(order.shipping)}</span>
+            <span>{order.shippingPending ? 'A combinar' : formatCurrency(order.shipping)}</span>
           </div>
         </div>
 
         <div className="mt-4 flex justify-between border-t border-stone pt-4 text-base font-medium text-ink">
           <span>Total</span>
-          <span>{formatCurrency(order.total)}</span>
+          <span>
+            {formatCurrency(order.total)}
+            {order.shippingPending && ' + frete'}
+          </span>
         </div>
 
-        <div className="mt-6 border-t border-stone pt-6 text-sm text-neutral-600">
+        {order.shippingPending && (
+          <p className="mt-3 text-xs text-neutral-500">
+            O valor do frete pra sua região será combinado com a loja pelo WhatsApp.
+          </p>
+        )}
+
+        <div className="mt-6 space-y-2 border-t border-stone pt-6 text-sm text-neutral-600">
           {order.deliveryMethod === 'pickup' ? (
             <p>Retirada na loja — Jaguariúna - SP</p>
           ) : (
@@ -91,6 +101,13 @@ export function OrderConfirmation() {
                 {order.address.city} - {order.address.state}, CEP {formatZipCode(order.address.zipCode)}
               </p>
             )
+          )}
+          <p>Pagamento: {PAYMENT_METHOD_LABELS[order.paymentMethod]}</p>
+          {order.deliveryMethod === 'delivery' && order.paymentMethod === 'credit' && (
+            <p className="border border-gold-light bg-gold-light/40 px-4 py-3 text-xs text-ink">
+              Pagamentos com cartão de crédito na entrega têm taxa adicional. O valor será combinado com a loja pelo
+              WhatsApp.
+            </p>
           )}
         </div>
       </div>

@@ -7,6 +7,7 @@ export const checkoutSchema = z
     name: z.string().trim().min(3, 'Informe seu nome completo.'),
     phone: z.string().refine(isValidPhone, 'Informe um WhatsApp válido com DDD.'),
     deliveryMethod: z.enum(['pickup', 'delivery']),
+    paymentMethod: z.enum(['cash', 'debit', 'credit', 'pix']),
     zipCode: z.string(),
     street: z.string(),
     number: z.string(),
@@ -16,6 +17,10 @@ export const checkoutSchema = z
     state: z.string(),
   })
   .superRefine((data, ctx) => {
+    if (data.deliveryMethod === 'delivery' && data.paymentMethod === 'cash') {
+      ctx.addIssue({ code: 'custom', path: ['paymentMethod'], message: 'Pagamento em dinheiro só está disponível para retirada na loja.' })
+    }
+
     if (data.deliveryMethod !== 'delivery') return
 
     if (!isValidZipCodeFormat(data.zipCode)) {

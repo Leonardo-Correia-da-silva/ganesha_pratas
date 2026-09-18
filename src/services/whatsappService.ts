@@ -1,7 +1,17 @@
 import { formatCurrency } from '@/utils/currency'
 import { formatZipCode } from '@/utils/cep'
 import { toWhatsAppDigits } from '@/utils/phone'
-import type { Order } from '@/types'
+import { PAYMENT_METHOD_LABELS, type Order, type OrderStatus } from '@/types'
+
+const STATUS_UPDATE_PHRASES: Record<OrderStatus, string> = {
+  pending: 'Recebemos seu pedido e já vamos confirmar tudo.',
+  confirmed: 'Seu pedido foi confirmado e já está sendo preparado com carinho.',
+  preparing: 'Seu pedido está sendo preparado.',
+  ready: 'Seu pedido está pronto!',
+  out_for_delivery: 'Seu pedido saiu para entrega!',
+  completed: 'Seu pedido foi concluído. Muito obrigado pela preferência!',
+  cancelled: 'Seu pedido foi cancelado. Qualquer dúvida, é só chamar por aqui.',
+}
 
 function buildProductsSection(order: Order): string {
   return order.items
@@ -25,7 +35,9 @@ function buildDeliverySection(order: Order): string {
       ]
     : []
 
-  return ['🚚 ENTREGA', '', ...addressLines, '', `Frete: ${formatCurrency(order.shipping)}`].join('\n')
+  const shippingLine = order.shippingPending ? 'Frete: A combinar' : `Frete: ${formatCurrency(order.shipping)}`
+
+  return ['🚚 ENTREGA', '', ...addressLines, '', shippingLine].join('\n')
 }
 
 export function generateWhatsAppMessage(order: Order): string {
@@ -47,12 +59,27 @@ export function generateWhatsAppMessage(order: Order): string {
     '',
     buildDeliverySection(order),
     '',
-    `💰 TOTAL: ${formatCurrency(order.total)}`,
+    `💰 TOTAL: ${formatCurrency(order.total)}${order.shippingPending ? ' + frete (a combinar)' : ''}`,
     '',
-    `💳 Pagamento: ${order.paymentMethod}`,
+    `💳 Pagamento: ${PAYMENT_METHOD_LABELS[order.paymentMethod]}`,
   ]
 
+  if (order.deliveryMethod === 'delivery' && order.paymentMethod === 'credit') {
+    sections.push('', '⚠️ Cartão de crédito na entrega tem taxa adicional — combine o valor com o cliente.')
+  }
+
   return sections.join('\n')
+}
+
+export function generateStatusUpdateMessage(order: Order): string {
+  const orderNumber = `#${String(order.orderNumber).padStart(6, '0')}`
+  const phrase = STATUS_UPDATE_PHRASES[order.status]
+
+  if (order.status === 'ready' && order.deliveryMethod === 'pickup') {
+    return `Olá, ${order.customer.name}! Seu pedido ${orderNumber} está pronto para retirada na loja. Te esperamos! 😊`
+  }
+
+  return `Olá, ${order.customer.name}! Sobre seu pedido ${orderNumber}: ${phrase}`
 }
 
 export function getWhatsAppUrl(phoneDigits: string, message: string): string {

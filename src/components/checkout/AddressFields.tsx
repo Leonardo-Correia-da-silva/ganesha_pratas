@@ -109,7 +109,9 @@ export function AddressFields({ form, shipping, shippingLoading }: AddressFields
               Frete para {shipping.regionName ?? 'sua região'}: {formatCurrency(shipping.price)}
             </span>
           ) : shipping?.status === 'out-of-area' ? (
-            <span className="text-red-600">Este CEP está fora da nossa área de entrega.</span>
+            <span className="text-ink">
+              Ainda não temos um valor de frete pra essa região — vamos combinar pelo WhatsApp após o pedido.
+            </span>
           ) : null}
         </div>
       )}

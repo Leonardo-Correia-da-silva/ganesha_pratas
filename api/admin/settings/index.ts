@@ -1,4 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
+import { FieldValue } from 'firebase-admin/firestore'
 import { requireAdmin } from '../../_lib/requireAdmin'
 import { getAdminFirestore } from '../../_lib/firebaseAdmin'
 import { storeSettingsInputSchema } from '../../_lib/schemas'
@@ -11,7 +12,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if (req.method === 'GET') {
     const snapshot = await docRef.get()
-    return res.status(200).json({ settings: snapshot.exists ? snapshot.data() : null })
+    if (!snapshot.exists) {
+      return res.status(200).json({ settings: null })
+    }
+
+    const data = snapshot.data() as Record<string, unknown> & { heroVideoUrl?: string | null }
+    // Migrate the old single-video field for stores that saved a hero video before
+    // the multi-video playlist feature existed.
+    if (!Array.isArray(data.heroVideoUrls) && data.heroVideoUrl) {
+      data.heroVideoUrls = [data.heroVideoUrl]
+    }
+
+    return res.status(200).json({ settings: data })
   }
 
   if (req.method === 'PUT') {
@@ -21,7 +33,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     const data = { ...parsed.data, logoUrl: parsed.data.logoUrl ?? null, updatedAt: new Date().toISOString() }
-    await docRef.set(data, { merge: true })
+    // Purge the legacy single-video field once and for all so it can never resurrect a
+    // deleted video on the public site after the multi-video playlist migration (see GET above).
+    await docRef.set({ ...data, heroVideoUrl: FieldValue.delete() }, { merge: true })
     return res.status(200).json({ settings: data })
   }
 

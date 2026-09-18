@@ -2,9 +2,11 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import { Trash2 } from 'lucide-react'
 import { PageHeader } from '@/admin/components/PageHeader'
 import { OrderStatusBadge } from '@/admin/components/OrderStatusBadge'
-import { listAllOrders } from '@/admin/services/orderAdminService'
+import { ConfirmDialog } from '@/admin/components/ConfirmDialog'
+import { deleteOrder, listAllOrders } from '@/admin/services/orderAdminService'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Select } from '@/components/ui/Select'
 import { Spinner } from '@/components/ui/Spinner'
@@ -15,6 +17,9 @@ export function Orders() {
   const [orders, setOrders] = useState<Order[] | null>(null)
   const [loading, setLoading] = useState(true)
   const [statusFilter, setStatusFilter] = useState<OrderStatus | ''>('')
+  const [deleteTarget, setDeleteTarget] = useState<Order | null>(null)
+  const [deleting, setDeleting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     listAllOrders()
@@ -27,6 +32,20 @@ export function Orders() {
     if (!statusFilter) return orders
     return orders.filter((order) => order.status === statusFilter)
   }, [orders, statusFilter])
+
+  async function handleDelete() {
+    if (!deleteTarget) return
+    setDeleting(true)
+    try {
+      await deleteOrder(deleteTarget.id)
+      setOrders((prev) => prev?.filter((o) => o.id !== deleteTarget.id) ?? null)
+      setDeleteTarget(null)
+    } catch {
+      setError('Não foi possível excluir o pedido.')
+    } finally {
+      setDeleting(false)
+    }
+  }
 
   return (
     <div>
@@ -47,6 +66,8 @@ export function Orders() {
         </Select>
       </div>
 
+      {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
+
       {loading ? (
         <div className="flex justify-center py-16">
           <Spinner />
@@ -55,7 +76,7 @@ export function Orders() {
         <EmptyState title="Nenhum pedido encontrado." />
       ) : (
         <div className="overflow-x-auto border border-stone bg-paper">
-          <table className="w-full min-w-[720px] text-left text-sm">
+          <table className="w-full min-w-[760px] text-left text-sm">
             <thead className="border-b border-stone bg-offwhite text-xs uppercase tracking-wide text-neutral-500">
               <tr>
                 <th className="px-4 py-3">Pedido</th>
@@ -64,11 +85,12 @@ export function Orders() {
                 <th className="px-4 py-3">Total</th>
                 <th className="px-4 py-3">Entrega</th>
                 <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3 text-right">Ações</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-stone">
               {filtered.map((order) => (
-                <tr key={order.id} className="cursor-pointer hover:bg-offwhite">
+                <tr key={order.id} className="hover:bg-offwhite">
                   <td className="px-4 py-3">
                     <Link to={`/admin/orders/${order.id}`} className="text-ink">
                       #{String(order.orderNumber).padStart(6, '0')}
@@ -78,12 +100,26 @@ export function Orders() {
                   <td className="px-4 py-3 text-neutral-600">
                     {format(new Date(order.createdAt), "dd/MM/yyyy HH:mm", { locale: ptBR })}
                   </td>
-                  <td className="px-4 py-3 text-neutral-600">{formatCurrency(order.total)}</td>
+                  <td className="px-4 py-3 text-neutral-600">
+                    {formatCurrency(order.total)}
+                    {order.shippingPending && <span className="ml-1 text-xs text-gold">+ frete a combinar</span>}
+                  </td>
                   <td className="px-4 py-3 text-neutral-600">
                     {order.deliveryMethod === 'pickup' ? 'Retirada' : 'Entrega'}
                   </td>
                   <td className="px-4 py-3">
                     <OrderStatusBadge status={order.status} />
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex justify-end">
+                      <button
+                        onClick={() => setDeleteTarget(order)}
+                        className="p-1.5 text-neutral-500 hover:text-red-600"
+                        aria-label={`Excluir pedido #${String(order.orderNumber).padStart(6, '0')}`}
+                      >
+                        <Trash2 className="size-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -91,6 +127,16 @@ export function Orders() {
           </table>
         </div>
       )}
+
+      <ConfirmDialog
+        open={Boolean(deleteTarget)}
+        title="Excluir pedido"
+        description={`Tem certeza que deseja excluir o pedido #${String(deleteTarget?.orderNumber ?? 0).padStart(6, '0')}? Esta ação não pode ser desfeita.`}
+        confirmLabel="Excluir"
+        loading={deleting}
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   )
 }

@@ -106,7 +106,9 @@ export function ProductPage() {
       </nav>
 
       <div className="grid gap-10 md:grid-cols-2 md:gap-16">
-        <ProductGallery images={product.images} productName={product.name} videoUrl={product.videoUrl} />
+        <div className="md:max-w-md">
+          <ProductGallery images={product.images} productName={product.name} videoUrl={product.videoUrl} />
+        </div>
 
         <div className="flex flex-col">
           <div className="mb-3 flex gap-2">

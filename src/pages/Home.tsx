@@ -20,7 +20,6 @@ export function Home() {
       <section className="container-luxe py-16 md:py-24">
         <div className="mb-10 text-center">
           <p className="mb-2 text-xs uppercase tracking-[0.3em] text-gold">Coleções</p>
-          <h2 className="font-display text-2xl text-ink md:text-3xl">Compre por categoria</h2>
         </div>
         <CategoryGrid categories={categories ?? []} loading={loadingCategories} />
       </section>

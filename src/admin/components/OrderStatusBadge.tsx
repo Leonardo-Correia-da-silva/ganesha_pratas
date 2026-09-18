@@ -2,7 +2,7 @@ import { ORDER_STATUS_LABELS, type OrderStatus } from '@/types'
 import { cn } from '@/utils/cn'
 
 const STATUS_COLORS: Record<OrderStatus, string> = {
-  pending: 'bg-neutral-200 text-ink',
+  pending: 'bg-yellow-100 text-yellow-800',
   confirmed: 'bg-blue-100 text-blue-800',
   preparing: 'bg-amber-100 text-amber-800',
   ready: 'bg-purple-100 text-purple-800',

@@ -6,11 +6,12 @@ import { AddressFields } from '@/components/checkout/AddressFields'
 import { checkoutSchema, type CheckoutFormValues } from '@/components/checkout/checkoutSchema'
 import { CheckoutSummary } from '@/components/checkout/CheckoutSummary'
 import { DeliveryMethodSelector } from '@/components/checkout/DeliveryMethodSelector'
+import { PaymentMethodSelector } from '@/components/checkout/PaymentMethodSelector'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { useCart } from '@/hooks/useCart'
 import { useShippingCalculation } from '@/hooks/useShippingCalculation'
-import { createOrder, InsufficientStockError, OutOfDeliveryAreaError } from '@/services/orderService'
+import { createOrder, InsufficientStockError } from '@/services/orderService'
 import { getStoreSettings } from '@/services/storeSettingsService'
 import { generateWhatsAppMessage, getWhatsAppUrl } from '@/services/whatsappService'
 import { onlyDigits } from '@/utils/cep'
@@ -30,6 +31,7 @@ export function Checkout() {
       name: '',
       phone: '',
       deliveryMethod: 'pickup',
+      paymentMethod: 'pix',
       zipCode: '',
       street: '',
       number: '',
@@ -49,7 +51,14 @@ export function Checkout() {
   } = form
 
   const deliveryMethod = watch('deliveryMethod')
+  const paymentMethod = watch('paymentMethod')
   const zipCode = watch('zipCode')
+
+  useEffect(() => {
+    if (deliveryMethod === 'delivery' && paymentMethod === 'cash') {
+      setValue('paymentMethod', 'pix')
+    }
+  }, [deliveryMethod, paymentMethod, setValue])
   const { result: shipping, loading: shippingLoading } = useShippingCalculation(
     zipCode,
     deliveryMethod === 'delivery',
@@ -61,6 +70,8 @@ export function Checkout() {
     return null
   }, [deliveryMethod, shipping])
 
+  const shippingPending = deliveryMethod === 'delivery' && shipping?.status === 'out-of-area'
+
   useEffect(() => {
     if (!orderCompleted && items.length === 0) {
       navigate('/carrinho')
@@ -69,18 +80,13 @@ export function Checkout() {
 
   async function onSubmit(values: CheckoutFormValues) {
     setSubmitError(null)
-
-    if (values.deliveryMethod === 'delivery' && shipping?.status !== 'ok') {
-      setSubmitError('Informe um CEP dentro da nossa área de entrega para continuar.')
-      return
-    }
-
     setSubmitting(true)
     try {
       const order = await createOrder({
         clientRequestId: clientRequestId.current,
         customer: { name: values.name.trim(), phone: values.phone.trim() },
         deliveryMethod: values.deliveryMethod,
+        paymentMethod: values.paymentMethod,
         address:
           values.deliveryMethod === 'delivery'
             ? {
@@ -107,7 +113,7 @@ export function Checkout() {
 
       navigate(`/pedido/${order.id}`)
     } catch (error) {
-      if (error instanceof InsufficientStockError || error instanceof OutOfDeliveryAreaError) {
+      if (error instanceof InsufficientStockError) {
         setSubmitError(error.message)
       } else {
         setSubmitError('Não foi possível finalizar o pedido. Tente novamente em instantes.')
@@ -117,7 +123,7 @@ export function Checkout() {
     }
   }
 
-  const canSubmit = deliveryMethod === 'pickup' || shipping?.status === 'ok'
+  const canSubmit = deliveryMethod === 'pickup' || shipping?.status === 'ok' || shipping?.status === 'out-of-area'
 
   return (
     <div className="container-luxe py-12 md:py-16">
@@ -152,6 +158,15 @@ export function Checkout() {
             </section>
           )}
 
+          <section>
+            <h2 className="mb-4 text-xs uppercase tracking-widest text-neutral-500">Pagamento</h2>
+            <PaymentMethodSelector
+              value={paymentMethod}
+              deliveryMethod={deliveryMethod}
+              onChange={(value) => setValue('paymentMethod', value)}
+            />
+          </section>
+
           {submitError && (
             <p role="alert" className="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
               {submitError}
@@ -160,7 +175,12 @@ export function Checkout() {
         </div>
 
         <div className="space-y-4">
-          <CheckoutSummary items={items} subtotal={subtotal} shipping={shippingPrice} />
+          <CheckoutSummary
+            items={items}
+            subtotal={subtotal}
+            shipping={shippingPrice}
+            shippingPending={shippingPending}
+          />
           <Button type="submit" className="w-full" loading={submitting} disabled={!canSubmit || submitting}>
             {submitting ? 'Processando pedido...' : 'Finalizar pedido'}
           </Button>

@@ -15,3 +15,7 @@ export async function updateOrderStatus(id: string, status: OrderStatus): Promis
   const data = await adminApi.patch<{ order: Order }>(`/api/admin/orders/${id}`, { status })
   return data.order
 }
+
+export async function deleteOrder(id: string): Promise<void> {
+  await adminApi.delete(`/api/admin/orders/${id}`)
+}

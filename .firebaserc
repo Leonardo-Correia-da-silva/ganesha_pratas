@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "ganesha-pratas"
+  },
+  "targets": {
+    "ganesha-pratas": {
+      "storage": {
+        "main": [
+          "ganesha-pratas.firebasestorage.app"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

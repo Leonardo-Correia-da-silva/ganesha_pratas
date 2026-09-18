@@ -11,6 +11,41 @@ service firebase.storage {
       allow write: if false;
     }
 
+    match /settings/logo/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /settings/footer-logo/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /settings/footer-background/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /settings/hero/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /settings/hero-video/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /settings/about/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /categories/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
     match /{allPaths=**} {
       allow read: if false;
       allow write: if false;

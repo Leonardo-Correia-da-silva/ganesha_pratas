@@ -7,6 +7,7 @@ import { MobileDrawer } from './MobileDrawer'
 import { SearchBar } from './SearchBar'
 import { useAsync } from '@/hooks/useAsync'
 import { getActiveCategories } from '@/services/categoryService'
+import { getStoreSettings } from '@/services/storeSettingsService'
 import { cn } from '@/utils/cn'
 
 const NAV_LINKS_BEFORE = [
@@ -24,6 +25,7 @@ export function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const { data: categories } = useAsync(() => getActiveCategories(), [])
+  const { data: settings } = useAsync(() => getStoreSettings(), [])
 
   return (
     <>
@@ -37,8 +39,12 @@ export function Header() {
           <Menu className="size-5" />
         </button>
 
-        <Link to="/" className="font-display text-xl tracking-wide text-ink md:text-2xl">
-          Joias Jaguariúna
+        <Link to="/" className="flex items-center font-display text-xl tracking-wide text-ink md:text-2xl">
+          {settings?.logoUrl ? (
+            <img src={settings.logoUrl} alt={settings.storeName} className="h-10 w-auto object-contain md:h-12" />
+          ) : (
+            (settings?.storeName ?? 'Joias Jaguariúna')
+          )}
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
