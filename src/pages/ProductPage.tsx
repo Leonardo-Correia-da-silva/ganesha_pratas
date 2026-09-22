@@ -96,7 +96,7 @@ export function ProductPage() {
   return (
     <div className="container-luxe py-12 md:py-16">
       <nav className="mb-8 text-xs text-neutral-500">
-        <Link to="/">Início</Link> / <Link to="/produtos">Joias</Link>
+        <Link to="/">Início</Link> / <Link to="/produtos">Produtos</Link>
         {category && (
           <>
             {' '}

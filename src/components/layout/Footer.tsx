@@ -51,7 +51,7 @@ export function Footer() {
           <p className="text-xs uppercase tracking-widest text-gold">Navegação</p>
           <nav className="flex flex-col gap-2 text-sm text-neutral-300">
             <Link to="/">Início</Link>
-            <Link to="/produtos">Joias</Link>
+            <Link to="/produtos">Produtos</Link>
             <Link to="/produtos?novidades=true">Novidades</Link>
             <Link to="/#sobre">Sobre</Link>
           </nav>
