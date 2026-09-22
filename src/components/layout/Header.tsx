@@ -50,9 +50,9 @@ export function Header() {
         className="container-luxe flex h-20 items-center justify-between"
         style={isDark ? ({ '--color-ink': '#ffffff', '--color-neutral-600': '#d4d4d4' } as React.CSSProperties) : undefined}
       >
-        <div className="flex flex-1 md:flex-none">
+        <div className="flex flex-1 md:hidden">
           <button
-            className="p-2 text-ink md:hidden"
+            className="p-2 text-ink"
             onClick={() => setDrawerOpen(true)}
             aria-label="Abrir menu"
           >
