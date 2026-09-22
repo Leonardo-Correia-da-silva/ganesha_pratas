@@ -47,20 +47,22 @@ export function Header() {
         style={headerColor ? { backgroundColor: headerColor } : undefined}
       >
       <div
-        className="container-luxe flex h-16 items-center justify-between md:h-20"
+        className="container-luxe flex h-20 items-center justify-between"
         style={isDark ? ({ '--color-ink': '#ffffff', '--color-neutral-600': '#d4d4d4' } as React.CSSProperties) : undefined}
       >
-        <button
-          className="p-2 text-ink md:hidden"
-          onClick={() => setDrawerOpen(true)}
-          aria-label="Abrir menu"
-        >
-          <Menu className="size-5" />
-        </button>
+        <div className="flex flex-1 md:flex-none">
+          <button
+            className="p-2 text-ink md:hidden"
+            onClick={() => setDrawerOpen(true)}
+            aria-label="Abrir menu"
+          >
+            <Menu className="size-5" />
+          </button>
+        </div>
 
-        <Link to="/" className="flex items-center font-display text-xl tracking-wide text-ink md:text-2xl">
+        <Link to="/" className="flex shrink-0 items-center font-display text-xl tracking-wide text-ink md:text-2xl">
           {settings?.logoUrl ? (
-            <img src={settings.logoUrl} alt={settings.storeName} className="h-10 w-auto object-contain md:h-12" />
+            <img src={settings.logoUrl} alt={settings.storeName} className="h-12 w-auto object-contain md:h-12" />
           ) : (
             (settings?.storeName ?? 'Joias Jaguariúna')
           )}
@@ -100,7 +102,7 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-1">
+        <div className="flex flex-1 items-center justify-end gap-1 md:flex-none">
           <button
             className="hidden p-2 text-ink md:inline-flex"
             onClick={() => setSearchOpen((prev) => !prev)}
