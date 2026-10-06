@@ -27,6 +27,7 @@ const schema = z.object({
   promotionalPrice: z.string(),
   stock: z.number().int().min(0, 'Estoque não pode ser negativo.'),
   videoUrl: z.string(),
+  sizes: z.string(),
   featured: z.boolean(),
   isNew: z.boolean(),
   active: z.boolean(),
@@ -64,6 +65,7 @@ export function ProductForm() {
       promotionalPrice: '',
       stock: 0,
       videoUrl: '',
+      sizes: '',
       featured: false,
       isNew: false,
       active: true,
@@ -96,6 +98,7 @@ export function ProductForm() {
             promotionalPrice: found.promotionalPrice != null ? String(found.promotionalPrice) : '',
             stock: found.stock,
             videoUrl: found.videoUrl ?? '',
+            sizes: (found.sizes ?? []).join(', '),
             featured: found.featured,
             isNew: found.isNew,
             active: found.active,
@@ -125,6 +128,10 @@ export function ProductForm() {
       stock: Number(values.stock),
       images,
       videoUrl: values.videoUrl?.trim() || null,
+      sizes: values.sizes
+        .split(',')
+        .map((size) => size.trim())
+        .filter(Boolean),
       featured: values.featured,
       isNew: values.isNew,
       active: values.active,
@@ -223,6 +230,15 @@ export function ProductForm() {
             onUpload={(file) => uploadProductVideo(storageProductId.current, file)}
             inputProps={register('videoUrl')}
             hint="MP4, WEBM ou MOV · até 20MB — ou cole o link de um vídeo já hospedado."
+          />
+        </section>
+
+        <section>
+          <Input
+            label="Tamanhos disponíveis (opcional)"
+            placeholder="Ex: 15, 16, 17, 18"
+            hint="Separados por vírgula. Se deixar em branco, nenhum tamanho é exibido no site."
+            {...register('sizes')}
           />
         </section>
 

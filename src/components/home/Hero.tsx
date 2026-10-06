@@ -36,12 +36,16 @@ export function Hero() {
       <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/20 to-transparent" />
 
       <div className="container-luxe relative z-10 pb-16 pt-32 text-paper md:pb-24">
-        <p className="mb-4 text-xs uppercase tracking-[0.3em] text-gold-soft">
-          {settings?.heroEyebrow || HERO_EYEBROW_PLACEHOLDER}
-        </p>
-        <h1 className="text-balance max-w-2xl font-display text-4xl leading-tight sm:text-5xl md:text-6xl">
-          {settings?.heroTitle || HERO_TITLE_PLACEHOLDER}
-        </h1>
+        {settings?.heroEyebrowEnabled !== false && (
+          <p className="mb-4 text-xs uppercase tracking-[0.3em] text-gold-soft">
+            {settings?.heroEyebrow || HERO_EYEBROW_PLACEHOLDER}
+          </p>
+        )}
+        {settings?.heroTitleEnabled !== false && (
+          <h1 className="text-balance max-w-2xl font-display text-4xl leading-tight sm:text-5xl md:text-6xl">
+            {settings?.heroTitle || HERO_TITLE_PLACEHOLDER}
+          </h1>
+        )}
         {settings?.heroSubtitleEnabled !== false && (
           <p className="mt-5 max-w-md text-balance text-sm text-neutral-200 md:text-base">
             {settings?.heroSubtitle || HERO_SUBTITLE_PLACEHOLDER}

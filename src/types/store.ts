@@ -5,7 +5,9 @@ export interface StoreSettings {
   footerLogoUrl: string | null
   footerBackgroundUrl: string | null
   heroEyebrow: string | null
+  heroEyebrowEnabled: boolean
   heroTitle: string | null
+  heroTitleEnabled: boolean
   heroSubtitle: string | null
   heroSubtitleEnabled: boolean
   heroImageUrl: string | null

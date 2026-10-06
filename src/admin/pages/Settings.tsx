@@ -26,7 +26,9 @@ const schema = z.object({
   footerLogoUrl: z.string(),
   footerBackgroundUrl: z.string(),
   heroEyebrow: z.string(),
+  heroEyebrowEnabled: z.boolean(),
   heroTitle: z.string(),
+  heroTitleEnabled: z.boolean(),
   heroSubtitle: z.string(),
   heroSubtitleEnabled: z.boolean(),
   heroImageUrl: z.string(),
@@ -85,7 +87,9 @@ export function Settings() {
       footerLogoUrl: '',
       footerBackgroundUrl: '',
       heroEyebrow: '',
+      heroEyebrowEnabled: true,
       heroTitle: '',
+      heroTitleEnabled: true,
       heroSubtitle: '',
       heroSubtitleEnabled: true,
       heroImageUrl: '',
@@ -113,7 +117,9 @@ export function Settings() {
             footerLogoUrl: settings.footerLogoUrl ?? '',
             footerBackgroundUrl: settings.footerBackgroundUrl ?? '',
             heroEyebrow: settings.heroEyebrow ?? '',
+            heroEyebrowEnabled: settings.heroEyebrowEnabled ?? true,
             heroTitle: settings.heroTitle ?? '',
+            heroTitleEnabled: settings.heroTitleEnabled ?? true,
             heroSubtitle: settings.heroSubtitle ?? '',
             heroSubtitleEnabled: settings.heroSubtitleEnabled ?? true,
             heroImageUrl: settings.heroImageUrl ?? '',
@@ -153,7 +159,9 @@ export function Settings() {
         footerLogoUrl: values.footerLogoUrl || null,
         footerBackgroundUrl: values.footerBackgroundUrl || null,
         heroEyebrow: values.heroEyebrow || null,
+        heroEyebrowEnabled: values.heroEyebrowEnabled,
         heroTitle: values.heroTitle || null,
+        heroTitleEnabled: values.heroTitleEnabled,
         heroSubtitle: values.heroSubtitle || null,
         heroSubtitleEnabled: values.heroSubtitleEnabled,
         heroImageUrl: values.heroImageUrl || null,
@@ -236,18 +244,30 @@ export function Settings() {
           title="Capa da página inicial"
           description="Textos, foto ou vídeo em destaque no topo do site (a primeira coisa que o visitante vê)."
         >
-          <Input
-            label="Etiqueta"
-            placeholder="Ex: Joalheria em Jaguariúna"
-            hint="Texto pequeno acima do título. Se deixar em branco, o site mostra um aviso pedindo pra preencher."
-            {...register('heroEyebrow')}
-          />
-          <Input
-            label="Título"
-            placeholder="Ex: Elegância que permanece."
-            hint="Se deixar em branco, o site mostra um aviso pedindo pra preencher."
-            {...register('heroTitle')}
-          />
+          <div>
+            <Input
+              label="Etiqueta"
+              placeholder="Ex: Joalheria em Jaguariúna"
+              hint="Texto pequeno acima do título. Se deixar em branco, o site mostra um aviso pedindo pra preencher — a menos que você desative abaixo."
+              {...register('heroEyebrow')}
+            />
+            <label className="mt-2 flex items-center gap-2 text-sm text-ink">
+              <input type="checkbox" {...register('heroEyebrowEnabled')} className="size-4 accent-ink" />
+              Exibir etiqueta na capa
+            </label>
+          </div>
+          <div>
+            <Input
+              label="Título"
+              placeholder="Ex: Elegância que permanece."
+              hint="Se deixar em branco, o site mostra um aviso pedindo pra preencher — a menos que você desative abaixo."
+              {...register('heroTitle')}
+            />
+            <label className="mt-2 flex items-center gap-2 text-sm text-ink">
+              <input type="checkbox" {...register('heroTitleEnabled')} className="size-4 accent-ink" />
+              Exibir título na capa
+            </label>
+          </div>
           <div>
             <Input
               label="Parágrafo"

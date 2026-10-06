@@ -16,6 +16,7 @@ export interface Product {
   stock: number
   images: ProductImage[]
   videoUrl: string | null
+  sizes: string[]
   featured: boolean
   isNew: boolean
   active: boolean

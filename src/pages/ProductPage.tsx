@@ -129,6 +129,22 @@ export function ProductPage() {
             )}
           </div>
 
+          {product.sizes && product.sizes.length > 0 && (
+            <div className="mt-6">
+              <p className="mb-2 text-xs uppercase tracking-widest text-neutral-500">Tamanhos disponíveis</p>
+              <div className="flex flex-wrap gap-2">
+                {product.sizes.map((size) => (
+                  <span
+                    key={size}
+                    className="flex min-w-10 items-center justify-center border border-stone px-3 py-1.5 text-sm text-ink"
+                  >
+                    {size}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
           <p className="mt-6 whitespace-pre-line text-sm leading-relaxed text-neutral-600">
             {product.description}
           </p>
