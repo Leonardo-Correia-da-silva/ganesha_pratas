@@ -15,7 +15,10 @@ const STATUS_UPDATE_PHRASES: Record<OrderStatus, string> = {
 
 function buildProductsSection(order: Order): string {
   return order.items
-    .map((item) => `${item.quantity}x ${item.name}\n${formatCurrency(item.subtotal)}`)
+    .map(
+      (item) =>
+        `${item.quantity}x ${item.name}${item.size ? ` (Tam. ${item.size})` : ''}\n${formatCurrency(item.subtotal)}`,
+    )
     .join('\n\n')
 }
 

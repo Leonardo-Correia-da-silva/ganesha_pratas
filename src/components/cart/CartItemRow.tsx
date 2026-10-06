@@ -6,8 +6,8 @@ import type { CartItem } from '@/types'
 
 interface CartItemRowProps {
   item: CartItem
-  onUpdateQuantity: (productId: string, quantity: number) => void
-  onRemove: (productId: string) => void
+  onUpdateQuantity: (productId: string, size: string | undefined, quantity: number) => void
+  onRemove: (productId: string, size: string | undefined) => void
 }
 
 export function CartItemRow({ item, onUpdateQuantity, onRemove }: CartItemRowProps) {
@@ -29,7 +29,7 @@ export function CartItemRow({ item, onUpdateQuantity, onRemove }: CartItemRowPro
             {item.name}
           </Link>
           <button
-            onClick={() => onRemove(item.productId)}
+            onClick={() => onRemove(item.productId, item.size)}
             aria-label={`Remover ${item.name}`}
             className="p-1 text-neutral-400 transition-colors hover:text-ink"
           >
@@ -38,12 +38,13 @@ export function CartItemRow({ item, onUpdateQuantity, onRemove }: CartItemRowPro
         </div>
 
         <p className="text-sm text-neutral-500">{formatCurrency(item.price)}</p>
+        {item.size && <p className="text-sm text-neutral-500">Tamanho: {item.size}</p>}
 
         <div className="mt-2 flex items-center justify-between">
           <QuantitySelector
             quantity={item.quantity}
             max={item.stock}
-            onChange={(quantity) => onUpdateQuantity(item.productId, quantity)}
+            onChange={(quantity) => onUpdateQuantity(item.productId, item.size, quantity)}
             size="sm"
           />
           <p className="text-sm font-medium text-ink">{formatCurrency(item.price * item.quantity)}</p>

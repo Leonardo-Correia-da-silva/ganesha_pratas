@@ -8,9 +8,13 @@ interface CartContextValue {
   totalItems: number
   subtotal: number
   addItem: (item: Omit<CartItem, 'quantity'>, quantity: number) => void
-  updateQuantity: (productId: string, quantity: number) => void
-  removeItem: (productId: string) => void
+  updateQuantity: (productId: string, size: string | undefined, quantity: number) => void
+  removeItem: (productId: string, size: string | undefined) => void
   clearCart: () => void
+}
+
+function isSameLine(item: CartItem, productId: string, size: string | undefined): boolean {
+  return item.productId === productId && item.size === size
 }
 
 export const CartContext = createContext<CartContextValue | undefined>(undefined)
@@ -41,13 +45,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const addItem = useCallback((item: Omit<CartItem, 'quantity'>, quantity: number) => {
     setItems((current) => {
-      const existing = current.find((cartItem) => cartItem.productId === item.productId)
+      const existing = current.find((cartItem) => isSameLine(cartItem, item.productId, item.size))
       const maxQuantity = item.stock
 
       if (existing) {
         const nextQuantity = Math.min(existing.quantity + quantity, maxQuantity)
         return current.map((cartItem) =>
-          cartItem.productId === item.productId ? { ...cartItem, quantity: nextQuantity } : cartItem,
+          isSameLine(cartItem, item.productId, item.size) ? { ...cartItem, quantity: nextQuantity } : cartItem,
         )
       }
 
@@ -55,18 +59,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
     })
   }, [])
 
-  const updateQuantity = useCallback((productId: string, quantity: number) => {
+  const updateQuantity = useCallback((productId: string, size: string | undefined, quantity: number) => {
     setItems((current) =>
       current.map((item) => {
-        if (item.productId !== productId) return item
+        if (!isSameLine(item, productId, size)) return item
         const clamped = Math.max(1, Math.min(quantity, item.stock))
         return { ...item, quantity: clamped }
       }),
     )
   }, [])
 
-  const removeItem = useCallback((productId: string) => {
-    setItems((current) => current.filter((item) => item.productId !== productId))
+  const removeItem = useCallback((productId: string, size: string | undefined) => {
+    setItems((current) => current.filter((item) => !isSameLine(item, productId, size)))
   }, [])
 
   const clearCart = useCallback(() => setItems([]), [])

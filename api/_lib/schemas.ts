@@ -108,6 +108,7 @@ export const createOrderInputSchema = z
         z.object({
           productId: z.string().min(1),
           quantity: z.number().int().positive('Quantidade deve ser maior que zero.'),
+          size: z.string().trim().min(1).optional(),
         }),
       )
       .min(1, 'O carrinho está vazio.'),

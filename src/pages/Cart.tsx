@@ -35,7 +35,7 @@ export function Cart() {
         <div className="lg:col-span-2">
           {items.map((item) => (
             <CartItemRow
-              key={item.productId}
+              key={`${item.productId}-${item.size ?? ''}`}
               item={item}
               onUpdateQuantity={updateQuantity}
               onRemove={removeItem}

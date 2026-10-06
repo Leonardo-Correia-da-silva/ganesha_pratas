@@ -59,6 +59,7 @@ export function OrderConfirmation() {
             <li key={index} className="flex justify-between text-sm">
               <span className="text-neutral-600">
                 {item.quantity}x {item.name}
+                {item.size && ` · Tam. ${item.size}`}
               </span>
               <span className="text-ink">{formatCurrency(item.subtotal)}</span>
             </li>

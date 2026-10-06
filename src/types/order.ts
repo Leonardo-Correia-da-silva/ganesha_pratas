@@ -59,6 +59,7 @@ export interface OrderItem {
   quantity: number
   subtotal: number
   image: string | null
+  size?: string | null
 }
 
 export interface Order {
@@ -85,7 +86,7 @@ export interface CreateOrderPayload {
   deliveryMethod: DeliveryMethod
   paymentMethod: PaymentMethod
   address: OrderAddress | null
-  items: Array<{ productId: string; quantity: number }>
+  items: Array<{ productId: string; quantity: number; size?: string }>
 }
 
 export interface CreateOrderResponse {

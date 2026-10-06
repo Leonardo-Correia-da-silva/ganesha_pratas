@@ -17,9 +17,10 @@ export function CheckoutSummary({ items, subtotal, shipping, shippingPending }: 
 
       <ul className="mt-4 space-y-3">
         {items.map((item) => (
-          <li key={item.productId} className="flex justify-between gap-3 text-sm">
+          <li key={`${item.productId}-${item.size ?? ''}`} className="flex justify-between gap-3 text-sm">
             <span className="text-neutral-600">
               {item.quantity}x {item.name}
+              {item.size && ` · Tam. ${item.size}`}
             </span>
             <span className="shrink-0 text-ink">{formatCurrency(item.price * item.quantity)}</span>
           </li>

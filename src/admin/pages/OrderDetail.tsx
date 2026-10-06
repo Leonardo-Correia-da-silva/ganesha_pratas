@@ -137,6 +137,7 @@ export function OrderDetail() {
                 )}
                 <span className="text-neutral-600">
                   {item.quantity}x {item.name}
+                  {item.size && ` · Tam. ${item.size}`}
                 </span>
               </div>
               <span className="shrink-0 text-ink">{formatCurrency(item.subtotal)}</span>

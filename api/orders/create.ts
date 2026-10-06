@@ -40,6 +40,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         quantity: number
         subtotal: number
         image: string | null
+        size: string | null
       }> = []
 
       for (let i = 0; i < payload.items.length; i++) {
@@ -84,6 +85,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           quantity: requestedItem.quantity,
           subtotal: effectivePrice * requestedItem.quantity,
           image: mainImage?.url ?? null,
+          size: requestedItem.size ?? null,
         })
       }
 

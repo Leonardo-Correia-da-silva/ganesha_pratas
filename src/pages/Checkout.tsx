@@ -99,7 +99,7 @@ export function Checkout() {
                 state: values.state.trim(),
               }
             : null,
-        items: items.map((item) => ({ productId: item.productId, quantity: item.quantity })),
+        items: items.map((item) => ({ productId: item.productId, quantity: item.quantity, size: item.size })),
       })
 
       setOrderCompleted(true)

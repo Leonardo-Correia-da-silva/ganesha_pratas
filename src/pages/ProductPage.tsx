@@ -22,10 +22,14 @@ export function ProductPage() {
   const [quantity, setQuantity] = useState(1)
   const [added, setAdded] = useState(false)
   const [category, setCategory] = useState<Category | null>(null)
+  const [selectedSize, setSelectedSize] = useState<string | undefined>(undefined)
+  const [sizeError, setSizeError] = useState(false)
 
   useEffect(() => {
     setQuantity(1)
     setAdded(false)
+    setSelectedSize(undefined)
+    setSizeError(false)
   }, [slug])
 
   useEffect(() => {
@@ -72,12 +76,20 @@ export function ProductPage() {
   }
 
   const soldOut = product.stock <= 0
-  const inCartQuantity = items.find((item) => item.productId === product.id)?.quantity ?? 0
+  const inCartQuantity = items
+    .filter((item) => item.productId === product.id)
+    .reduce((sum, item) => sum + item.quantity, 0)
   const remainingStock = Math.max(0, product.stock - inCartQuantity)
   const hasPromo = product.promotionalPrice !== null && product.promotionalPrice < product.price
+  const sizes = product.sizes ?? []
+  const hasSizes = sizes.length > 0
 
   function handleAddToCart() {
     if (!product || soldOut) return
+    if (hasSizes && !selectedSize) {
+      setSizeError(true)
+      return
+    }
     addItem(
       {
         productId: product.id,
@@ -86,6 +98,7 @@ export function ProductPage() {
         image: getProductMainImage(product),
         price: getEffectivePrice(product),
         stock: product.stock,
+        size: selectedSize,
       },
       quantity,
     )
@@ -129,19 +142,29 @@ export function ProductPage() {
             )}
           </div>
 
-          {product.sizes && product.sizes.length > 0 && (
+          {hasSizes && (
             <div className="mt-6">
-              <p className="mb-2 text-xs uppercase tracking-widest text-neutral-500">Tamanhos disponíveis</p>
+              <p className="mb-2 text-xs uppercase tracking-widest text-neutral-500">Tamanho</p>
               <div className="flex flex-wrap gap-2">
-                {product.sizes.map((size) => (
-                  <span
+                {sizes.map((size) => (
+                  <button
                     key={size}
-                    className="flex min-w-10 items-center justify-center border border-stone px-3 py-1.5 text-sm text-ink"
+                    type="button"
+                    onClick={() => {
+                      setSelectedSize(size)
+                      setSizeError(false)
+                    }}
+                    className={`flex min-w-10 items-center justify-center border px-3 py-1.5 text-sm transition-colors ${
+                      selectedSize === size
+                        ? 'border-ink bg-ink text-paper'
+                        : 'border-stone text-ink hover:border-neutral-400'
+                    }`}
                   >
                     {size}
-                  </span>
+                  </button>
                 ))}
               </div>
+              {sizeError && <p className="mt-2 text-xs text-red-600">Selecione um tamanho antes de continuar.</p>}
             </div>
           )}
 
