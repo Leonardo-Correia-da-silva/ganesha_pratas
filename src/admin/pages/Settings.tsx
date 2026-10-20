@@ -10,7 +10,6 @@ import { getAdminStoreSettings, updateStoreSettings } from '@/admin/services/set
 import {
   uploadAboutImage,
   uploadFooterBackground,
-  uploadFooterLogo,
   uploadHeroImage,
   uploadHeroVideo,
   uploadLogo,
@@ -142,7 +141,6 @@ export function Settings() {
 
   const logoUrl = watch('logoUrl')
   const headerBackgroundColor = watch('headerBackgroundColor')
-  const footerLogoUrl = watch('footerLogoUrl')
   const footerBackgroundUrl = watch('footerBackgroundUrl')
   const heroImageUrl = watch('heroImageUrl')
   const aboutImageUrl = watch('aboutImageUrl')
@@ -191,7 +189,7 @@ export function Settings() {
       <PageHeader title="Configurações da loja" />
 
       <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl space-y-6">
-        <SettingsSection title="Identidade da loja" description="Nome e logos usados no cabeçalho e no rodapé do site.">
+        <SettingsSection title="Identidade da loja" description="Nome da loja e logo do cabeçalho.">
           <Input label="Nome da loja" error={errors.storeName?.message} {...register('storeName')} />
 
           <ImageUrlField
@@ -228,16 +226,6 @@ export function Settings() {
               se ajusta automaticamente para continuar legível.
             </p>
           </div>
-
-          <ImageUrlField
-            label="Logo do rodapé"
-            value={footerLogoUrl}
-            onValueChange={(url) => setValue('footerLogoUrl', url, { shouldDirty: true })}
-            onUpload={uploadFooterLogo}
-            inputProps={register('footerLogoUrl')}
-            previewClassName="h-14 w-14 shrink-0 border border-stone bg-ink object-contain"
-            hint="Como o fundo do rodapé é escuro, use uma versão clara da logo. Se deixar em branco, usa a mesma logo do cabeçalho."
-          />
         </SettingsSection>
 
         <SettingsSection

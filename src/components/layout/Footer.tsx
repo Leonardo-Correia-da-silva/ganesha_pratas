@@ -31,71 +31,58 @@ export function Footer() {
         </>
       )}
 
-      <div className="container-luxe relative z-10 grid gap-10 py-16 md:grid-cols-4">
-        <div className="space-y-3">
-          {settings?.footerLogoUrl || settings?.logoUrl ? (
-            <img
-              src={settings.footerLogoUrl ?? settings.logoUrl ?? undefined}
-              alt={settings.storeName}
-              className="h-10 w-auto object-contain"
-            />
-          ) : (
-            <p className="font-display text-xl text-paper">{settings?.storeName ?? 'Joias Jaguariúna'}</p>
-          )}
-          <p className="text-sm text-neutral-400">
-            Joias escolhidas para transformar momentos em memórias.
-          </p>
-        </div>
-
-        <div className="space-y-3">
-          <p className="text-xs uppercase tracking-widest text-gold">Navegação</p>
-          <nav className="flex flex-col gap-2 text-sm text-neutral-300">
-            <Link to="/">Início</Link>
-            <Link to="/produtos">Produtos</Link>
-            <Link to="/produtos?novidades=true">Novidades</Link>
-            <Link to="/#sobre">Sobre</Link>
-          </nav>
-        </div>
-
-        <div className="space-y-3">
-          <p className="text-xs uppercase tracking-widest text-gold">Contato</p>
-          <div className="flex flex-col gap-2.5 text-sm text-neutral-300">
-            {settings?.whatsapp && (
-              <a
-                href={getWhatsAppUrl(settings.whatsapp, 'Olá! Gostaria de saber mais sobre as joias.')}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-2 hover:text-paper"
-              >
-                <MessageCircle className="size-4 text-gold" /> WhatsApp
-              </a>
-            )}
-            {settings?.instagram && (
-              <a
-                href={`https://instagram.com/${settings.instagram.replace('@', '')}`}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-2 hover:text-paper"
-              >
-                <InstagramIcon className="size-4 text-gold" /> {settings.instagram}
-              </a>
-            )}
-            {settings?.email && (
-              <a href={`mailto:${settings.email}`} className="flex items-center gap-2 hover:text-paper">
-                <Mail className="size-4 text-gold" /> {settings.email}
-              </a>
-            )}
+      <div className="container-luxe relative z-10 py-16">
+        <div className="grid gap-10 md:grid-cols-3">
+          <div className="space-y-3">
+            <p className="text-xs uppercase tracking-widest text-gold">Navegação</p>
+            <nav className="flex flex-col gap-2 text-sm text-neutral-300">
+              <Link to="/">Início</Link>
+              <Link to="/produtos">Produtos</Link>
+              <Link to="/produtos?novidades=true">Novidades</Link>
+              <Link to="/#sobre">Sobre</Link>
+            </nav>
           </div>
-        </div>
 
-        <div className="space-y-3">
-          <p className="text-xs uppercase tracking-widest text-gold">Localização</p>
-          <p className="flex items-start gap-2 text-sm text-neutral-300">
-            <MapPin className="mt-0.5 size-4 shrink-0 text-gold" />
-            {settings?.address ? `${settings.address}, ` : ''}
-            {settings?.city ?? 'Jaguariúna'} - {settings?.state ?? 'SP'}
-            {settings?.zipCode ? `, ${formatZipCode(settings.zipCode)}` : ''}
-          </p>
+          <div className="space-y-3 md:justify-self-center">
+            <p className="text-xs uppercase tracking-widest text-gold">Contato</p>
+            <div className="flex flex-col gap-2.5 text-sm text-neutral-300">
+              {settings?.whatsapp && (
+                <a
+                  href={getWhatsAppUrl(settings.whatsapp, 'Olá! Gostaria de saber mais sobre as joias.')}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-2 hover:text-paper"
+                >
+                  <MessageCircle className="size-4 text-gold" /> WhatsApp
+                </a>
+              )}
+              {settings?.instagram && (
+                <a
+                  href={`https://instagram.com/${settings.instagram.replace('@', '')}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-2 hover:text-paper"
+                >
+                  <InstagramIcon className="size-4 text-gold" /> {settings.instagram}
+                </a>
+              )}
+              {settings?.email && (
+                <a href={`mailto:${settings.email}`} className="flex items-center gap-2 hover:text-paper">
+                  <Mail className="size-4 text-gold" /> {settings.email}
+                </a>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-3 md:justify-self-end">
+            <p className="text-xs uppercase tracking-widest text-gold">Localização</p>
+            <p className="flex items-start gap-2 text-sm text-neutral-300">
+              <MapPin className="mt-0.5 size-4 shrink-0 text-gold" />
+              {settings?.address ? `${settings.address}, ` : ''}
+              {settings?.city ?? 'Jaguariúna'} - {settings?.state ?? 'SP'}
+              {settings?.zipCode ? `, ${formatZipCode(settings.zipCode)}` : ''}
+            </p>
+          </div>
         </div>
       </div>
 
